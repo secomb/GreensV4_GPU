@@ -4,7 +4,7 @@
 #define NR_END 1
 #define FREE_ARG char*
 
-void nrerror(const char error_text[50]) //modified 2018 for compatability with VS 2017
+void nrerror(const char error_text[50]) //modified 2018 for compatability with VS 2017 
 /* Numerical Recipes standard error handler */
 {
 	fprintf(stderr, "Numerical Recipes run_time error... \n");

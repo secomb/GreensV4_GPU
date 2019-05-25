@@ -33,7 +33,7 @@ static int iminarg1,iminarg2;
 
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 
-void nrerror(const char error_text[50]);
+void nrerror(const char error_text[50]);	//modified 2018 for compatability with VS 2017
 float *vector(long nl, long nh);
 int *ivector(long nl, long nh);
 unsigned char *cvector(long nl, long nh);
