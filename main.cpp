@@ -12,10 +12,24 @@ See greens.cpp for description of changes.
 #include <string.h>
 #include <math.h>
 #include "nrutil.h"
+<<<<<<< HEAD
 #if defined(__linux__) 
 //linux goes here
 #elif defined(_WIN32)	//Windows version
 #include <Windows.h>
+=======
+
+#if defined(__linux__)
+	// Requires c++17 support, should be included in all current linux releases
+	#include <experimental/filesystem> 
+	namespace fs = std::experimental::filesystem::v1;
+#elif defined(__APPLE__)
+	// Requires removal of the -lstdc++fs flag from makefile
+	#include <filesystem>
+	namespace fs = std::filesystem;
+#elif defined(_WIN32)    //Windows version
+	#include <Windows.h>
+>>>>>>> 4f49710c92e187bad88658350ca0c3b0574788aa
 #endif
 
 void input(void);
@@ -82,22 +96,30 @@ int main(int argc, char *argv[])
 	char fname[80];
 	FILE *ofp;
 
-#if defined(__linux__) 
-	//linux code goes here
-#elif defined(_WIN32) 			//Windows version
-	bool NoOverwrite = false;
-	DWORD ftyp = GetFileAttributesA("Current\\");
-	if (ftyp != FILE_ATTRIBUTE_DIRECTORY) system("mkdir Current");		//Create a Current subdirectory if it does not already exist.
-	CopyFile("BCparams.dat", "Current\\BCparams.dat", NoOverwrite); //copy input data files to "Current" directory
-	CopyFile("ContourParams.dat.dat", "Current\\ContourParams.dat", NoOverwrite);
-	CopyFile("SoluteParamsParams.dat.dat", "Current\\SoluteParamsParams.dat", NoOverwrite);
-	CopyFile("Network.dat", "Current\\Network.dat", NoOverwrite);
-	CopyFile("IntravascRes.dat", "Current\\IntravascRes.dat", NoOverwrite);
-	CopyFile("tissrate.cpp.dat", "Current\\tissrate.cpp.dat", NoOverwrite);
-	ftyp = GetFileAttributes("Varyparams.dat");
-	if (ftyp != 0xFFFFFFFF) CopyFile("Varyparams.dat", "Current\\Varyparams.dat", NoOverwrite);	//this file may not exist!
-	ftyp = GetFileAttributesA("Varyparams.dat");
-#endif
+//Create a Current subdirectory if it does not already exist. August 2017.  Modified January 2019
+	//copy input data files to "Current" directory
+
+	#if defined(__unix__)
+		if (!fs::exists("Current")) fs::create_directory("Current");
+		fs::copy_file("BCparams.dat", fs::path("Current/BCparams.dat"), fs::copy_options::overwrite_existing);
+		fs::copy_file("ContourParams.dat", fs::path("Current/ContourParams.dat"), fs::copy_options::overwrite_existing);
+		fs::copy_file("SoluteParams.dat", fs::path("Current/SoluteParams.dat"), fs::copy_options::overwrite_existing);
+		fs::copy_file("Network.dat", fs::path("Current/Network.dat"), fs::copy_options::overwrite_existing);
+		fs::copy_file("IntravascRes.dat", fs::path("Current/IntravascRes.dat"), fs::copy_options::overwrite_existing);
+		if (fs::exists("Varyparams.dat")) 
+			fs::copy_file("VaryParams.dat", fs::path("Current/VaryParams.dat"), fs::copy_options::overwrite_existing);
+		fs::copy_file("tissrate.cpp.dat", fs::path("Current/tissrate.cpp.dat"), fs::copy_options::overwrite_existing);		
+	#elif defined(_WIN32)
+		BOOL NoOverwrite = FALSE;
+		FILE *ofp;
+
+		CopyFile("SoluteParams.dat","Current/SoluteParams.dat",NoOverwrite);
+		CopyFile("IntravascRes.dat","Current/IntravascRes.dat",NoOverwrite);
+		CopyFile("ContourParams.dat","Current/ContourParams.dat",NoOverwrite);
+		CopyFile("VaryParams.dat","Current/VaryParams.dat",NoOverwrite);
+		CopyFile("network.dat","Current/Network.dat",NoOverwrite);
+		CopyFile("tissrate.cpp.dat","Current/tissrate.cpp.dat",NoOverwrite);
+	#endif
 
 	input();
 
