@@ -12,12 +12,6 @@ See greens.cpp for description of changes.
 #include <string.h>
 #include <math.h>
 #include "nrutil.h"
-<<<<<<< HEAD
-#if defined(__linux__) 
-//linux goes here
-#elif defined(_WIN32)	//Windows version
-#include <Windows.h>
-=======
 
 #if defined(__linux__)
 	// Requires c++17 support, should be included in all current linux releases
@@ -29,7 +23,6 @@ See greens.cpp for description of changes.
 	namespace fs = std::filesystem;
 #elif defined(_WIN32)    //Windows version
 	#include <Windows.h>
->>>>>>> 4f49710c92e187bad88658350ca0c3b0574788aa
 #endif
 
 void input(void);
@@ -111,8 +104,6 @@ int main(int argc, char *argv[])
 		fs::copy_file("tissrate.cpp.dat", fs::path("Current/tissrate.cpp.dat"), fs::copy_options::overwrite_existing);		
 	#elif defined(_WIN32)
 		BOOL NoOverwrite = FALSE;
-		FILE *ofp;
-
 		CopyFile("SoluteParams.dat","Current/SoluteParams.dat",NoOverwrite);
 		CopyFile("IntravascRes.dat","Current/IntravascRes.dat",NoOverwrite);
 		CopyFile("ContourParams.dat","Current/ContourParams.dat",NoOverwrite);
@@ -214,7 +205,7 @@ int main(int argc, char *argv[])
 		greens();		//run greens
 		//*************************************
 
-		ofp = fopen("Current\\summary.out", "a");
+		ofp = fopen("Current/summary.out", "a");
 
 		fprintf(ofp, "%4i  %4i  ", imain, kmain);
 		for (j = 1; j <= nvaryparams; j++) fprintf(ofp, "%12f ", paramvalue[imain][j]);
